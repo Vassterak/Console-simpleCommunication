@@ -3,15 +3,7 @@
 //#include <time.h>
 #include "myFunctions.h"
 
-#define PORT_ADDRESS 0x301
-
-int readReceivedValue()
-{
-	if (inb(PORT_ADDRESS)&(1<<0))
-		return 1;
-	else
-		return 0;
-};
+/* #define PORT_ADDRESS 0x301
 
 int main(void)
 {	
@@ -25,6 +17,18 @@ int main(void)
 	{
 		if (readReceivedValue())
 			printf("OneReceived\n");
+	}
+	return 0;
+} */
+
+#define DATA_TRANSFER_PIN 2
+
+int main (void)
+{
+
+	while (1)
+	{
+
 	}
 	return 0;
 }

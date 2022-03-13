@@ -3,7 +3,7 @@
 //#include <time.h>
 #include "myFunctions.h"
 
-#define PORT_ADDRESS 0x300
+/* #define PORT_ADDRESS 0x300
 #define MAX_PACKET_SIZE 16 //in bytes, min size is 
 
 char userInput[16];
@@ -14,13 +14,11 @@ void userInput()
     fgets(userInput,16,stdin);
 };
 
-
 int returnBinaryValue()
 {
 
 
 };
-
 
 int main(void)
 {	
@@ -37,6 +35,18 @@ int main(void)
 		delay(50);
 		writeValue(1, 1);
 		delay(50);
+	}
+	return 0;
+} */
+
+#define DATA_TRANSFER_PIN 2
+
+int main (void)
+{
+
+	while (1)
+	{
+		
 	}
 	return 0;
 }
