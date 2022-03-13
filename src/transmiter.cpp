@@ -40,19 +40,55 @@ int main(void)
 } */
 
 #define DATA_TRANSFER_PIN 2
+int asciiText[256];
+
+void ConvertToBinary(int asciiChar)
+{
+	for (int i = 0; i < 8; i++)
+	{
+		if (asciiChar & 1 == 1)
+			Serial.print("1 ");
+		else
+			Serial.print("0 ");
+
+		Serial.println("");
+		asciiChar = asciiChar >> 1;
+	}
+	
+}
+
+void convertText()
+{
+	char text[] = "hello";
+	for (int i = 0; text[i] != '\0'; i++)
+	{
+		asciiText[i] = text[i];
+		//printf("%d", ch);
+		Serial.println(asciiText[i], DEC);
+		ConvertToBinary(asciiText[i]);
+	}
+}
+
+void Checksum()
+{
+
+}
+
 
 int main (void)
 {
-	setup(2,1);
+	setup(DATA_TRANSFER_PIN, 1);
 	init();
 	Serial.begin(9600);
+
 	while (1)
 	{
-		delay(500);
-		writeValueAVR(2,0);
+		_delay_ms(1000);
+		writeValueAVR(DATA_TRANSFER_PIN, 0);
 		//Serial.println("sdfsdfsf");
-		delay(500);
-		writeValueAVR(2,1);
+		convertText();
+		_delay_ms(1000);
+		writeValueAVR(DATA_TRANSFER_PIN, 1);
 	}
 	return 0;
 }

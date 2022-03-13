@@ -25,19 +25,13 @@ int main(void)
 
 int main (void)
 {
-	pinMode(13, OUTPUT);
-	//setup(2,0);
+	setup(DATA_TRANSFER_PIN, 0);
 	init();
 	Serial.begin(9600);
+
 	while (1)
 	{
-		delay(500);
-		digitalWrite(13,HIGH);
-		//writeValueAVR(2,0);
-		Serial.println("sdfsdfsf");
-		delay(500);
-		digitalWrite(13,LOW);
-		//writeValueAVR(2,1);
+
 	}
 	return 0;
 }
