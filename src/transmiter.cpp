@@ -43,7 +43,8 @@ int main(void)
 
 int main (void)
 {
-
+	setup(2,1);
+	Serial.begin(9600);
 	while (1)
 	{
 		

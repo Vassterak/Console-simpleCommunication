@@ -67,9 +67,9 @@ int readValueAVR(int bitPos)
 }
 
 //---------------------------------------------Shared code---------------------------------------------
-void delay(int delayMS)
+/*void myDelay(int delayMS)
 {
 	clock_t startTime = clock();
 	while (clock() < startTime + delayMS * 1000)
 	;
-};
+};*/

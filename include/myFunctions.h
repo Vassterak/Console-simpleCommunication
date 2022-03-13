@@ -1,6 +1,6 @@
-#include <Arduino.h>
 #include <stdio.h>
 #include <time.h>
+#include <Arduino.h>
 
 #ifndef MYFUNCTIONS_H
 #define MYFUNCTIONS_H
@@ -15,9 +15,9 @@ int readReceivedValue();
 void delay(int delayMS); */
 
 //---------------------------------------------Setup for AVR platform---------------------------------------------
-void setup();
+void setup(int pinSelection, bool isTransmiter);
 void writeValueAVR(int bitPos, int value);
 int readValueAVR(int bitPos);
-void delay(int delayMS);
+void myDelay(int delayMS);
 
 #endif

@@ -25,7 +25,8 @@ int main(void)
 
 int main (void)
 {
-
+	setup(2,0);
+	Serial.begin(9600);
 	while (1)
 	{
 
