@@ -44,10 +44,15 @@ int main(void)
 int main (void)
 {
 	setup(2,1);
+	init();
 	Serial.begin(9600);
 	while (1)
 	{
-		
+		delay(500);
+		writeValueAVR(2,0);
+		//Serial.println("sdfsdfsf");
+		delay(500);
+		writeValueAVR(2,1);
 	}
 	return 0;
 }
