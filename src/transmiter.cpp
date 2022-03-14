@@ -59,20 +59,14 @@ void ConvertToBinary(int asciiChar)
 	for (int i = 0; i < 8; i++)
 	{
 		if ((asciiChar & 1) == 1)
-		{
 			rawBinaryMessage[currentIndex][i] = 1;
-			//Serial.print("1 ");
-		}
+
 		else
-		{
 			rawBinaryMessage[currentIndex][i] = 0;
-			//Serial.print("0 ");
-		}
+
 
 		asciiChar = asciiChar >> 1;
 	}
-
-	//Serial.println("");
 }
 
 void convertText(char text[])
@@ -98,10 +92,8 @@ void dataSend()
 	for (uint8_t i = 0; i < 4; i++)
 	{
 		startDelay(100);
-
 		for (uint8_t j = 0; j < 8; j++)
 		{
-			//Serial.print(rawBinaryMessage[i][j]);
 			if (testData[i][j] == 0)
 			{
 				writeValueAVR(DATA_TRANSFER_PIN, 1);
@@ -118,8 +110,7 @@ void dataSend()
 			}
 		}
 		writeValueAVR(DATA_TRANSFER_PIN, 0);
-		_delay_ms(5); //for testing purpose only
-		//Serial.print("\n");
+		_delay_ms(5); //temporary
 	}
 }
 
@@ -127,7 +118,6 @@ void Checksum()
 {
 
 }
-
 
 int main (void)
 {

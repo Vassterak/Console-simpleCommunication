@@ -53,8 +53,6 @@ void setup(int pinSelection, bool isTransmiter)
 		
 	else
 		DDRD = 0x00;
-	
-
 }
 
 void writeValueAVR(int bitPos, int value)
