@@ -40,32 +40,52 @@ int main(void)
 } */
 
 #define DATA_TRANSFER_PIN 2
-int asciiText[256];
+
+//I aware that this step is not memory efficient whole int array takes up 512 bytes (when int is one byte) And I know that I can store just ascii values and convert it to binary on the fly before sending.
+//But for this purpose of school homework I have settled for this solution. So convert all ascii values to binary and save it in 2d array. (I know that I'm wasting a lot of memory)
+uint8_t rawBinaryMessage[128][8], currentIndex;
 
 void ConvertToBinary(int asciiChar)
 {
 	for (int i = 0; i < 8; i++)
 	{
 		if (asciiChar & 1 == 1)
-			Serial.print("1 ");
+		{
+			rawBinaryMessage[currentIndex][i] = 1;
+			//Serial.print("1 ");
+		}
 		else
-			Serial.print("0 ");
+		{
+			rawBinaryMessage[currentIndex][i] = 0;
+			//Serial.print("0 ");
+		}
 
-		Serial.println("");
 		asciiChar = asciiChar >> 1;
 	}
-	
+
+	//Serial.println("");
 }
 
-void convertText()
+void convertText(char text[])
 {
-	char text[] = "hello";
 	for (int i = 0; text[i] != '\0'; i++)
 	{
-		asciiText[i] = text[i];
-		//printf("%d", ch);
-		Serial.println(asciiText[i], DEC);
-		ConvertToBinary(asciiText[i]);
+		currentIndex = i;
+		ConvertToBinary(text[i]);
+	}
+}
+
+void arrayCheck()
+{
+	for (int i = 0; i < currentIndex +1; i++)
+	{
+		for (uint8_t j = 0; j < 8; j++)
+		{
+			//Serial.print(rawBinaryMessage[i][j]);
+			writeValueAVR(DATA_TRANSFER_PIN, rawBinaryMessage[i][j]);
+			_delay_ms(1);
+		}
+		//Serial.print("\n");
 	}
 }
 
@@ -83,12 +103,9 @@ int main (void)
 
 	while (1)
 	{
-		_delay_ms(1000);
-		writeValueAVR(DATA_TRANSFER_PIN, 0);
-		//Serial.println("sdfsdfsf");
-		convertText();
-		_delay_ms(1000);
-		writeValueAVR(DATA_TRANSFER_PIN, 1);
+		convertText("hello");
+		arrayCheck();
+		_delay_ms(2000);;
 	}
 	return 0;
 }
