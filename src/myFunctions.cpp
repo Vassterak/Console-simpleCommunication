@@ -46,11 +46,15 @@ int readReceivedValue()
 void setup(int pinSelection, bool isTransmiter)
 {
 	if (isTransmiter)
+	{
 		DDRD = (0x01 << pinSelection);
+		PORTD = 0x00;
+	}
+		
 	else
 		DDRD = 0x00;
 	
-	PORTD = 0x00;
+
 }
 
 void writeValueAVR(int bitPos, int value)
