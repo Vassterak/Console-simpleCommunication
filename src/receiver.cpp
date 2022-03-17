@@ -65,6 +65,7 @@ int main (void)
 			//get time of first signal rise (microseconds)
  			timeShift = micros();
 
+			//Do nothing while incomming value is high
 			while (readValueAVR(DATA_TRANSFER_PIN) == 1)
 				;
 			
