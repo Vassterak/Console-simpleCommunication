@@ -65,6 +65,10 @@ void writeValueAVR(int bitPos, int value)
 
 int readValueAVR(int bitPos)
 {
+/* 	if ((PIND & 0b00000100) == 0)
+		return 0;
+	else
+		return 1; */
 	return (PIND & (1 << bitPos));
 }
 

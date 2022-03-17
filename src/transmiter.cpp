@@ -83,7 +83,7 @@ void startDelay(int delayTime)
 	writeValueAVR(DATA_TRANSFER_PIN, 1);
 	_delay_us(delayTime);
 	writeValueAVR(DATA_TRANSFER_PIN, 0);
-	_delay_us(delayTime);
+	_delay_us(delayTime*2);
 }
 
 
