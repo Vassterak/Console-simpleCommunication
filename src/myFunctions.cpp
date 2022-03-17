@@ -42,6 +42,25 @@ int readReceivedValue()
 		return 0;
 }; */
 
+/*void myDelay(int delayMS)
+{
+	clock_t startTime = clock();
+	while (clock() < startTime + delayMS * 1000)
+	;
+};*/
+
+/*
+int myDelay2(long miliseconds)
+{
+   struct timespec rem;
+   struct timespec req= {
+       (int)(miliseconds / 1000),
+       (miliseconds % 1000) * 1000000
+   };
+
+   return nanosleep(&req , &rem);
+}*/
+
 //---------------------------------------------Setup for AVR platform---------------------------------------------
 void setup(int pinSelection, bool isTransmiter)
 {
@@ -71,11 +90,3 @@ int readValueAVR(int bitPos)
 		return 1; */
 	return (PIND & (1 << bitPos));
 }
-
-//---------------------------------------------Shared code---------------------------------------------
-/*void myDelay(int delayMS)
-{
-	clock_t startTime = clock();
-	while (clock() < startTime + delayMS * 1000)
-	;
-};*/

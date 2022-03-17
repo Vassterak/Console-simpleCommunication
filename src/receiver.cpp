@@ -24,11 +24,6 @@ int main(void)
 #define DATA_TRANSFER_PIN 2
 #define DATA_FISTBIT_DELAY 200
 
-/* struct timeval {
-    time_t      tv_sec;
-    suseconds_t tv_usec;    
-}; */
-
 uint8_t firstBit = 0;
 
 void readBits()
@@ -53,42 +48,35 @@ void waitingForFirstBit()
 
 int main (void)
 {
+	//AVR timing
+	unsigned long timeShift, timeShift2; 
 
+	//pinout setup AVR
 	setup(DATA_TRANSFER_PIN, 0);
+
+	//Serialline setup AVR
 	init();
 	Serial.begin(9600);
 
 	while (1)
 	{
-/*   		if (readValueAVR(DATA_TRANSFER_PIN) == 1)
+   		if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 		{
-			if (firstBit == 0)
+			timeShift = micros(); //get time of first signal rise (microseconds)
+
+			while (readValueAVR(DATA_TRANSFER_PIN) == 1)
+				;
+			
+			timeShift2 = micros(); //get time of first signal fall (microseconds)
+
+			if (timeShift2 - timeShift <= 530 && timeShift2 - timeShift > 470)
 			{
-				Serial.println("bit1");
-				//timeStarted = clock();
-				timeShit = micros();
-				firstBit = 1;
-				continue;
+				Serial.println("ano");
 			}
+			else
+				continue;
+		}
 
-			if (micros() > timeShit + DATA_FISTBIT_DELAY)
-			{
-				if (micros() > timeShit + DATA_FISTBIT_DELAY+300)
-				{
-					firstBit = 0;
-					continue;
-				}
-
-				else if (readValueAVR(DATA_TRANSFER_PIN) == 0)
-					readBits();
-			}		
-		} */
-/* 
-		if (readValueAVR(DATA_TRANSFER_PIN) == 1)
-		{
-			timeStarted = clock();
-		}  */
-		waitingForFirstBit();
 	}
 	return 0;
 }

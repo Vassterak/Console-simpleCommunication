@@ -18,6 +18,7 @@ void delay(int delayMS); */
 void setup(int pinSelection, bool isTransmiter);
 void writeValueAVR(int bitPos, int value);
 int readValueAVR(int bitPos);
-void myDelay(int delayMS);
+//void myDelay(int delayMS);
+//void myDelay2(int delayMS);
 
 #endif
