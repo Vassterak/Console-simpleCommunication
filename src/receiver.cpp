@@ -62,21 +62,27 @@ int main (void)
 	{
    		if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 		{
-			timeShift = micros(); //get time of first signal rise (microseconds)
+			//get time of first signal rise (microseconds)
+ 			timeShift = micros();
 
 			while (readValueAVR(DATA_TRANSFER_PIN) == 1)
 				;
 			
-			timeShift2 = micros(); //get time of first signal fall (microseconds)
+			//get time of first signal fall (microseconds)
+			timeShift2 = micros();
 
+			//Check if data transmission started (each packet has starting value, used for sync)
 			if (timeShift2 - timeShift <= 530 && timeShift2 - timeShift > 470)
 			{
-				Serial.println("ano");
+				Serial.println("start");
+				_delay_us(2000);
 			}
 			else
+			{
+				//Serial.println(timeShift2-timeShift);
 				continue;
+			}
 		}
-
 	}
 	return 0;
 }

@@ -64,6 +64,7 @@ int myDelay2(long miliseconds)
 //---------------------------------------------Setup for AVR platform---------------------------------------------
 void setup(int pinSelection, bool isTransmiter)
 {
+	//set register as output, leave other alone (for protection input is preferred)
 	if (isTransmiter)
 	{
 		DDRD = (0x01 << pinSelection);
@@ -84,9 +85,9 @@ void writeValueAVR(int bitPos, int value)
 
 int readValueAVR(int bitPos)
 {
-/* 	if ((PIND & 0b00000100) == 0)
+ 	if ((PIND & (1 << bitPos)) == 0)
 		return 0;
 	else
-		return 1; */
-	return (PIND & (1 << bitPos));
+		return 1;
+	//return (PIND & (1 << bitPos));
 }
