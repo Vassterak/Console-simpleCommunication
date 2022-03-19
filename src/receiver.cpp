@@ -22,7 +22,6 @@ int main(void)
 } */
 
 #define DATA_TRANSFER_PIN 2 //pin number in register D
-#define DATA_FISTBIT_DELAY 200 //us (microseconds)
 
 //for first bit indicating incomming packet (define tolerances for signal duration)
 #define START_TOLERANCE 490 //us
@@ -30,7 +29,7 @@ int main(void)
 
 int * readIncommingPacket()
 {
-	static int outputData[8], index = 0;
+	static int outputData[8];
 	_delay_us(500);
 
 	for (uint8_t i = 0; i < 8; i++)
@@ -40,29 +39,29 @@ int * readIncommingPacket()
 			_delay_us(1000);
 			if (readValueAVR(DATA_TRANSFER_PIN) == 0)
 			{
-				PORTD = PORTD ^ 0b00001000; //toggle value when value is read (debug only)
-				outputData[index] = 0;
-				index++;
+				//toggle value when value is read (debug only)
+				PORTD = PORTD ^ 0b00001000; 
+				outputData[i] = 0;
 				_delay_us(1000);
 			}
 		}
+
 		else
 		{
 			_delay_us(1000);
 			if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 			{
-				PORTD = PORTD ^ 0b00001000; //toggle value when value is read (debug only)
-				outputData[index] = 1;
-				index++;
+				//toggle value when value is read (debug only)
+				PORTD = PORTD ^ 0b00001000;
+				outputData[i] = 1;
 				_delay_us(1000);
 			}
 		}
 	}
-/*  	for (size_t i = 0; i < 8; i++)
-	{
-		Serial.println(outputData[i]);
-	} */
-	writeValueAVR(3,0); //debugging purpose
+
+	//DEBUG ONLY
+	writeValueAVR(3,0);
+	
 	return outputData;
 }
 
@@ -73,7 +72,9 @@ int main (void)
 
 	//pinout setup AVR
 	setup(DATA_TRANSFER_PIN, 0);
-	DDRD = 0b00001000; //debug only
+
+	//DEBUG ONLY
+	DDRD = 0b00001000;
 
 	//Serialline setup AVR
 	init();
@@ -100,18 +101,15 @@ int main (void)
 				_delay_us(2000);
 				int * dataPacket = readIncommingPacket();
 
+				//DEBUG ONLY
 				for (size_t i = 0; i < 8; i++)
-				{
 					Serial.println(dataPacket[i]);
-				}
+
 				Serial.println("----------");
 				
 			}
 			else
-			{
-				//Serial.println(timeShift2-timeShift);
 				continue;
-			}
 		}
 	}
 	return 0;

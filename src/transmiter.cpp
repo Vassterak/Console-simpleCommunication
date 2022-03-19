@@ -40,7 +40,7 @@ int main(void)
 } */
 
 #define DATA_TRANSFER_PIN 2
-#define DATA_HOLD_TIME 998
+#define DATA_HOLD_TIME 998 //2us removed because that's the average time that is used for rest of the program
 
 //I aware that this step is not memory efficient whole int array takes up 512 bytes (when int is one byte) And I know that I can store just ascii values and convert it to binary on the fly before sending.
 //But for this purpose of school homework I have settled for this solution. So convert all ascii values to binary and save it in 2d array. (I know that I'm wasting a lot of memory)
@@ -108,7 +108,7 @@ void dataSend()
 			}
 		}
 		writeValueAVR(DATA_TRANSFER_PIN, 0);
-		_delay_ms(20); //temporary
+		_delay_ms(10); //debug only
 	}
 }
 
