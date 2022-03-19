@@ -30,32 +30,39 @@ int main(void)
 
 int * readIncommingPacket()
 {
-	static int outputData[8];
+	static int outputData[8], index = 0;
 	_delay_us(500);
-	for (uint8_t i = 0; i < 16; i++)
+
+	for (uint8_t i = 0; i < 8; i++)
 	{
-		writeValueAVR(3,1); //debugging purpose
 		if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 		{
+			_delay_us(1000);
 			if (readValueAVR(DATA_TRANSFER_PIN) == 0)
 			{
-				outputData[i] = 1;
+				PORTD = PORTD ^ 0b00001000; //toggle value when value is read (debug only)
+				outputData[index] = 0;
+				index++;
+				_delay_us(1000);
 			}
 		}
 		else
 		{
+			_delay_us(1000);
 			if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 			{
-				outputData[i] = 0;
+				PORTD = PORTD ^ 0b00001000; //toggle value when value is read (debug only)
+				outputData[index] = 1;
+				index++;
+				_delay_us(1000);
 			}
 		}
-		_delay_us(1000);
 	}
-	writeValueAVR(3,0); //debugging purpose
 /*  	for (size_t i = 0; i < 8; i++)
 	{
 		Serial.println(outputData[i]);
 	} */
+	writeValueAVR(3,0); //debugging purpose
 	return outputData;
 }
 
@@ -78,7 +85,7 @@ int main (void)
    		if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 		{
 			//get time of first signal rise (get cpu time in microseconds)
- 			timeShift = micros();
+			timeShift = micros();
 
 			//Do nothing while port value is high
 			while (readValueAVR(DATA_TRANSFER_PIN) == 1)
