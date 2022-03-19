@@ -44,14 +44,12 @@ int main(void)
 
 //I aware that this step is not memory efficient whole int array takes up 512 bytes (when int is one byte) And I know that I can store just ascii values and convert it to binary on the fly before sending.
 //But for this purpose of school homework I have settled for this solution. So convert all ascii values to binary and save it in 2d array. (I know that I'm wasting a lot of memory)
-uint8_t rawBinaryMessage[128][8], currentIndex;
+uint8_t rawBinaryMessage[64][8], currentIndex;
 
 uint8_t testData[4][8] =
 {
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {1, 1, 1, 1, 1, 1, 1, 1},
-	{0, 1, 1, 0, 1, 0, 0, 0},
-	{0, 1, 1, 0, 1, 0, 0, 0}
+    {0, 0, 0, 1, 1, 0, 0, 0},
+    {1, 1, 1, 1, 1, 1, 1, 1}
 };
 
 void ConvertToBinary(int asciiChar)
@@ -89,7 +87,7 @@ void startDelay(int delayTime)
 
 void dataSend()
 {
-	for (uint8_t i = 0; i < 4; i++)
+	for (uint8_t i = 0; i < 2; i++)
 	{
 		startDelay(500);
 		for (uint8_t j = 0; j < 8; j++)
@@ -110,7 +108,7 @@ void dataSend()
 			}
 		}
 		writeValueAVR(DATA_TRANSFER_PIN, 0);
-		_delay_ms(5); //temporary
+		_delay_ms(20); //temporary
 	}
 }
 

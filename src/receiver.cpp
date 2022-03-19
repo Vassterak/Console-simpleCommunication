@@ -25,21 +25,48 @@ int main(void)
 #define DATA_FISTBIT_DELAY 200 //us (microseconds)
 
 //for first bit indicating incomming packet (define tolerances for signal duration)
-#define START_TOLERANCE 470 //us
-#define END_TOLERANCE 530 //us
+#define START_TOLERANCE 490 //us
+#define END_TOLERANCE 510 //us
 
-void readIncommingPacket()
+int * readIncommingPacket()
 {
-
+	static int outputData[8];
+	_delay_us(500);
+	for (uint8_t i = 0; i < 16; i++)
+	{
+		writeValueAVR(3,1); //debugging purpose
+		if (readValueAVR(DATA_TRANSFER_PIN) == 1)
+		{
+			if (readValueAVR(DATA_TRANSFER_PIN) == 0)
+			{
+				outputData[i] = 1;
+			}
+		}
+		else
+		{
+			if (readValueAVR(DATA_TRANSFER_PIN) == 1)
+			{
+				outputData[i] = 0;
+			}
+		}
+		_delay_us(1000);
+	}
+	writeValueAVR(3,0); //debugging purpose
+/*  	for (size_t i = 0; i < 8; i++)
+	{
+		Serial.println(outputData[i]);
+	} */
+	return outputData;
 }
 
 int main (void)
 {
 	//AVR timing
-	unsigned long timeShift, timeShift2; 
+	unsigned long timeShift, timeShift2;
 
 	//pinout setup AVR
 	setup(DATA_TRANSFER_PIN, 0);
+	DDRD = 0b00001000; //debug only
 
 	//Serialline setup AVR
 	init();
@@ -61,10 +88,17 @@ int main (void)
 			timeShift2 = micros();
 
 			//Check if data transmission started (each packet has starting value, used for sync)
-			if (timeShift2 - timeShift <= 530 && timeShift2 - timeShift > 470)
+			if (timeShift2 - timeShift <= END_TOLERANCE && timeShift2 - timeShift > START_TOLERANCE)
 			{
 				_delay_us(2000);
-				readIncommingPacket();
+				int * dataPacket = readIncommingPacket();
+
+				for (size_t i = 0; i < 8; i++)
+				{
+					Serial.println(dataPacket[i]);
+				}
+				Serial.println("----------");
+				
 			}
 			else
 			{
