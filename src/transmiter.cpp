@@ -46,10 +46,10 @@ int main(void)
 //But for this purpose of school homework I have settled for this solution. So convert all ascii values to binary and save it in 2d array. (I know that I'm wasting a lot of memory)
 uint8_t rawBinaryMessage[64][8], currentIndex;
 
-uint8_t testData[4][8] =
+uint8_t testData[4][8] = //ascii: h,e
 {
-    {0, 0, 0, 1, 1, 0, 0, 0},
-    {1, 1, 1, 1, 1, 1, 1, 1}
+    {0, 1, 1, 0, 1, 0, 0, 0},
+    {0, 1, 1, 0, 0, 1, 0, 1}
 };
 
 void ConvertToBinary(int asciiChar)

@@ -27,9 +27,9 @@ int main(void)
 #define START_TOLERANCE 490 //us
 #define END_TOLERANCE 510 //us
 
-int * readIncommingPacket()
+int readIncommingPacket()
 {
-	static int outputData[8];
+	int outputData = 0;
 	_delay_us(500);
 
 	for (uint8_t i = 0; i < 8; i++)
@@ -40,8 +40,9 @@ int * readIncommingPacket()
 			if (readValueAVR(DATA_TRANSFER_PIN) == 0)
 			{
 				//toggle value when value is read (debug only)
-				PORTD = PORTD ^ 0b00001000; 
-				outputData[i] = 0;
+				PORTD = PORTD ^ 0b00001000;
+				
+				outputData |= 0 << i;
 				_delay_us(1000);
 			}
 		}
@@ -53,12 +54,12 @@ int * readIncommingPacket()
 			{
 				//toggle value when value is read (debug only)
 				PORTD = PORTD ^ 0b00001000;
-				outputData[i] = 1;
+
+				outputData |= 1 << i;
 				_delay_us(1000);
 			}
 		}
 	}
-
 	//DEBUG ONLY
 	writeValueAVR(3,0);
 	
@@ -69,6 +70,9 @@ int main (void)
 {
 	//AVR timing
 	unsigned long timeShift, timeShift2;
+
+	//Received value
+	int dataPacket = 0;
 
 	//pinout setup AVR
 	setup(DATA_TRANSFER_PIN, 0);
@@ -99,12 +103,12 @@ int main (void)
 			if (timeShift2 - timeShift <= END_TOLERANCE && timeShift2 - timeShift > START_TOLERANCE)
 			{
 				_delay_us(2000);
-				int * dataPacket = readIncommingPacket();
+				dataPacket = readIncommingPacket();
 
 				//DEBUG ONLY
-				for (size_t i = 0; i < 8; i++)
-					Serial.println(dataPacket[i]);
-
+				Serial.println(dataPacket, BIN);
+				Serial.println(dataPacket, DEC);
+				Serial.println(dataPacket);
 				Serial.println("----------");
 				
 			}
