@@ -44,35 +44,47 @@ int main(void)
 
 //I aware that this step is not memory efficient whole int array takes up 512 bytes (when int is one byte) And I know that I can store just ascii values and convert it to binary on the fly before sending.
 //But for this purpose of school homework I have settled for this solution. So convert all ascii values to binary and save it in 2d array. (I know that I'm wasting a lot of memory)
-uint8_t rawBinaryMessage[64][8], currentIndex;
-
-uint8_t testData[4][8] = //ascii: h,e
+static uint8_t rawBinaryMessage[64][8], currentIndex;
+static uint8_t sizeOfMessage = 0;
+//ascii: hello
+/* uint8_t testData[5][8] =
 {
     {0, 1, 1, 0, 1, 0, 0, 0},
-    {0, 1, 1, 0, 0, 1, 0, 1}
-};
+    {0, 1, 1, 0, 0, 1, 0, 1},
+	{0, 1, 1, 0, 1, 1, 0, 0},
+	{0, 1, 1, 0, 1, 1, 0, 0},
+	{0, 1, 1, 0, 1, 1, 1, 1}
+}; */
 
 void ConvertToBinary(int asciiChar)
 {
 	for (int i = 0; i < 8; i++)
 	{
 		if ((asciiChar & 1) == 1)
+		{
 			rawBinaryMessage[currentIndex][i] = 1;
+			Serial.println(rawBinaryMessage[currentIndex][i]);
+		}
 
 		else
+		{
 			rawBinaryMessage[currentIndex][i] = 0;
-
+			Serial.println(rawBinaryMessage[currentIndex][i]);
+		}
 
 		asciiChar = asciiChar >> 1;
 	}
+	Serial.println("---");
 }
 
 void convertText(char text[])
 {
+	sizeOfMessage = sizeof(text) / sizeof(char*);
 	for (int i = 0; text[i] != '\0'; i++)
 	{
 		currentIndex = i;
 		ConvertToBinary(text[i]);
+		//Serial.println(text[i]); is working
 	}
 }
 
@@ -87,12 +99,12 @@ void startDelay(int delayTime)
 
 void dataSend()
 {
-	for (uint8_t i = 0; i < 2; i++)
+	for (uint8_t i = 0; i < 5; i++)
 	{
 		startDelay(500);
 		for (uint8_t j = 0; j < 8; j++)
 		{
-			if (testData[i][j] == 0)
+			if (rawBinaryMessage[i][j] == 0)
 			{
 				writeValueAVR(DATA_TRANSFER_PIN, 1);
 				_delay_us(DATA_HOLD_TIME);
@@ -108,7 +120,7 @@ void dataSend()
 			}
 		}
 		writeValueAVR(DATA_TRANSFER_PIN, 0);
-		_delay_ms(10); //debug only
+		_delay_ms(20); //debug only
 	}
 }
 

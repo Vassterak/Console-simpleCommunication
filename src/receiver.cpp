@@ -66,6 +66,7 @@ int readIncommingPacket()
 	return outputData;
 }
 
+//Not required because I'm already sending values in right order
 int byteReverse(int toReverseNum)
 {
     int pos = 8 - 1;     // maintains shift, 8bits are in this int (platform dependent)
@@ -124,13 +125,14 @@ int main (void)
 			if (timeShift2 - timeShift <= END_TOLERANCE && timeShift2 - timeShift > START_TOLERANCE)
 			{
 				_delay_us(2000);
-				dataPacket = byteReverse(readIncommingPacket());
+				dataPacket = readIncommingPacket();
+				//dataPacket = byteReverse(outputValue);
 
 				//DEBUG ONLY
-				Serial.println(dataPacket, BIN);
-				Serial.println(dataPacket, DEC);
-				Serial.println(dataPacket);
-				Serial.println("----------");
+				//Serial.println(dataPacket, BIN);
+				//Serial.println(dataPacket, DEC);
+				Serial.println((char)dataPacket);
+				//Serial.println("----------");
 			}
 			else
 				continue;
