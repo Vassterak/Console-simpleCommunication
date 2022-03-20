@@ -39,9 +39,6 @@ int readIncommingPacket()
 			_delay_us(1000);
 			if (readValueAVR(DATA_TRANSFER_PIN) == 0)
 			{
-				//toggle value when value is read (debug only)
-				PORTD = PORTD ^ 0b00001000;
-
 				outputData |= 0 << i;
 				_delay_us(1000);
 			}
@@ -52,9 +49,6 @@ int readIncommingPacket()
 			_delay_us(1000);
 			if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 			{
-				//toggle value when value is read (debug only)
-				PORTD = PORTD ^ 0b00001000;
-
 				outputData |= 1 << i;
 				_delay_us(1000);
 			}
@@ -64,28 +58,6 @@ int readIncommingPacket()
 	writeValueAVR(3,0);
 	
 	return outputData;
-}
-
-//Not required because I'm already sending values in right order
-int byteReverse(int toReverseNum)
-{
-    int pos = 8 - 1;     // maintains shift, 8bits are in this int (platform dependent)
- 
-    // store reversed bits of `n`. Initially, all bits are set to 0
-    int reversed = 0;
- 
-    // do till all bits are processed
-    while (pos >= 0 && toReverseNum)
-    {
-        // if the current bit is 1, then set the corresponding bit in the result
-        if (toReverseNum & 1)
-            reversed = reversed | (1 << pos);
- 
-        toReverseNum >>= 1;                // drop current bit (divide by 2)
-        pos--;                  // decrement shift by 1
-    }
- 
-    return reversed;
 }
 
 int main (void)
@@ -98,9 +70,6 @@ int main (void)
 
 	//pinout setup AVR
 	setup(DATA_TRANSFER_PIN, 0);
-
-	//DEBUG ONLY
-	DDRD = 0b00001000;
 
 	//Serialline setup AVR
 	init();
@@ -126,13 +95,9 @@ int main (void)
 			{
 				_delay_us(2000);
 				dataPacket = readIncommingPacket();
-				//dataPacket = byteReverse(outputValue);
 
 				//DEBUG ONLY
-				//Serial.println(dataPacket, BIN);
-				//Serial.println(dataPacket, DEC);
 				Serial.println((char)dataPacket);
-				//Serial.println("----------");
 			}
 			else
 				continue;
