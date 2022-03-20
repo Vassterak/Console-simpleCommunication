@@ -44,47 +44,31 @@ int main(void)
 
 //I aware that this step is not memory efficient whole int array takes up 512 bytes (when int is one byte) And I know that I can store just ascii values and convert it to binary on the fly before sending.
 //But for this purpose of school homework I have settled for this solution. So convert all ascii values to binary and save it in 2d array. (I know that I'm wasting a lot of memory)
-static uint8_t rawBinaryMessage[64][8], currentIndex;
-static uint8_t sizeOfMessage = 0;
-//ascii: hello
-/* uint8_t testData[5][8] =
-{
-    {0, 1, 1, 0, 1, 0, 0, 0},
-    {0, 1, 1, 0, 0, 1, 0, 1},
-	{0, 1, 1, 0, 1, 1, 0, 0},
-	{0, 1, 1, 0, 1, 1, 0, 0},
-	{0, 1, 1, 0, 1, 1, 1, 1}
-}; */
+static uint8_t rawBinaryMessage[64][8], currentIndex = 0, sizeOfMessage = 0;
 
 void ConvertToBinary(int asciiChar)
 {
 	for (int i = 0; i < 8; i++)
 	{
 		if ((asciiChar & 1) == 1)
-		{
 			rawBinaryMessage[currentIndex][i] = 1;
-			Serial.println(rawBinaryMessage[currentIndex][i]);
-		}
 
 		else
-		{
 			rawBinaryMessage[currentIndex][i] = 0;
-			Serial.println(rawBinaryMessage[currentIndex][i]);
-		}
 
 		asciiChar = asciiChar >> 1;
 	}
-	Serial.println("---");
 }
 
-void convertText(char text[])
+void breakUpText(char text[])
 {
-	sizeOfMessage = sizeof(text) / sizeof(char*);
+	sizeOfMessage = strlen(text);
+	Serial.println(sizeOfMessage);
+
 	for (int i = 0; text[i] != '\0'; i++)
 	{
 		currentIndex = i;
 		ConvertToBinary(text[i]);
-		//Serial.println(text[i]); is working
 	}
 }
 
@@ -99,7 +83,7 @@ void startDelay(int delayTime)
 
 void dataSend()
 {
-	for (uint8_t i = 0; i < 5; i++)
+	for (uint8_t i = 0; i < sizeOfMessage; i++)
 	{
 		startDelay(500);
 		for (uint8_t j = 0; j < 8; j++)
@@ -120,7 +104,7 @@ void dataSend()
 			}
 		}
 		writeValueAVR(DATA_TRANSFER_PIN, 0);
-		_delay_ms(20); //debug only
+		_delay_ms(20); //delay between packets
 	}
 }
 
@@ -138,7 +122,7 @@ int main (void)
 	while (1)
 	{
 		writeValueAVR(DATA_TRANSFER_PIN, 0);
-		convertText("hello");
+		breakUpText("hello");
 		dataSend();
 		_delay_ms(2000);;
 	}
