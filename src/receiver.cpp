@@ -27,6 +27,8 @@ int main(void)
 #define START_TOLERANCE 490 //us
 #define END_TOLERANCE 510 //us
 
+static uint8_t dataPacket = 0;
+
 uint16_t readIncommingPacket()
 {
 	uint16_t outputData = 0;
@@ -57,23 +59,35 @@ uint16_t readIncommingPacket()
 	return outputData;
 }
 
-void integrityCheck(uint16_t receivedPacket)
+uint8_t integrityCheck(uint16_t receivedPacket)
 {
-	uint8_t checksum = (receivedPacket & 0xFF);
-	uint8_t data = (receivedPacket >> 8);
+	uint8_t data = (receivedPacket & 0xFF);
+	uint8_t checksum = (receivedPacket >> 8);
+	uint8_t numberOfOnesData = 0, dataOneBitsNum = data;
 
-	Serial.println(receivedPacket, BIN);
-	Serial.println(data, BIN);
-	Serial.println(checksum, BIN);
+    while (dataOneBitsNum > 0)
+	{
+        if (dataOneBitsNum & 1)
+            numberOfOnesData++;
+		
+        dataOneBitsNum = dataOneBitsNum >> 1;
+    }
+
+	if (numberOfOnesData == checksum)
+	{
+		dataPacket = data;
+		return 0;
+	}
+	else
+		return 1;
 }
 
 int main (void)
 {
-	//AVR timing
+	//AVR timing  
 	unsigned long timeShift, timeShift2;
 
 	//Received value
-	uint16_t dataPacket = 0;
 
 	//pinout setup AVR
 	setup(DATA_TRANSFER_PIN, 0);
@@ -101,10 +115,8 @@ int main (void)
 			if (timeShift2 - timeShift <= END_TOLERANCE && timeShift2 - timeShift > START_TOLERANCE)
 			{
 				_delay_us(2000);
-				integrityCheck(readIncommingPacket());
-
-				//DEBUG ONLY
-				//Serial.println(dataPacket, BIN);
+				if (integrityCheck(readIncommingPacket()) == 0)
+					Serial.println((char)dataPacket);
 			}
 			else
 				continue;

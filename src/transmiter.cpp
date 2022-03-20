@@ -88,9 +88,9 @@ void checkSum(uint8_t packetID)
 	uint8_t number = checkSumNum[packetID];
 	//Serial.println(number);
 
-	for (uint8_t i = 4; i > 0; i--)
+	for (uint8_t i = 0; i < 4; i++)
 	{
-		if ((number >> (i-1)) & 1)
+		if ((number >> (i)) & 1)
 		{
 			writeValueAVR(DATA_TRANSFER_PIN, 0);
 			_delay_us(DATA_HOLD_TIME);
@@ -147,7 +147,7 @@ int main (void)
 	while (1)
 	{
 		writeValueAVR(DATA_TRANSFER_PIN, 0);
-		breakUpText("o");
+		breakUpText("helo");
 		dataSend();
 		_delay_ms(2000);;
 	}
