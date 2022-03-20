@@ -27,12 +27,12 @@ int main(void)
 #define START_TOLERANCE 490 //us
 #define END_TOLERANCE 510 //us
 
-int readIncommingPacket()
+uint16_t readIncommingPacket()
 {
-	int outputData = 0;
+	uint16_t outputData = 0;
 	_delay_us(500);
 
-	for (uint8_t i = 0; i < 8; i++)
+	for (uint8_t i = 0; i < 12; i++)
 	{
 		if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 		{
@@ -53,11 +53,18 @@ int readIncommingPacket()
 				_delay_us(1000);
 			}
 		}
-	}
-	//DEBUG ONLY
-	writeValueAVR(3,0);
-	
+	}	
 	return outputData;
+}
+
+void integrityCheck(uint16_t receivedPacket)
+{
+	uint8_t checksum = (receivedPacket & 0xFF);
+	uint8_t data = (receivedPacket >> 8);
+
+	Serial.println(receivedPacket, BIN);
+	Serial.println(data, BIN);
+	Serial.println(checksum, BIN);
 }
 
 int main (void)
@@ -66,7 +73,7 @@ int main (void)
 	unsigned long timeShift, timeShift2;
 
 	//Received value
-	int dataPacket = 0;
+	uint16_t dataPacket = 0;
 
 	//pinout setup AVR
 	setup(DATA_TRANSFER_PIN, 0);
@@ -94,10 +101,10 @@ int main (void)
 			if (timeShift2 - timeShift <= END_TOLERANCE && timeShift2 - timeShift > START_TOLERANCE)
 			{
 				_delay_us(2000);
-				dataPacket = readIncommingPacket();
+				integrityCheck(readIncommingPacket());
 
 				//DEBUG ONLY
-				Serial.println((char)dataPacket);
+				//Serial.println(dataPacket, BIN);
 			}
 			else
 				continue;

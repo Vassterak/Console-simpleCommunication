@@ -74,10 +74,10 @@ void breakUpText(char text[])
 	}
 }
 
-void startDelay(uint8_t delayTime)
+void startDelay()
 {
 	writeValueAVR(DATA_TRANSFER_PIN, 1);
-	_delay_us(delayTime);
+	_delay_us(500);
 	writeValueAVR(DATA_TRANSFER_PIN, 0);
 	_delay_us(2000);
 }
@@ -90,7 +90,7 @@ void checkSum(uint8_t packetID)
 
 	for (uint8_t i = 4; i > 0; i--)
 	{
-		if ((number >> i-1) & 1)
+		if ((number >> (i-1)) & 1)
 		{
 			writeValueAVR(DATA_TRANSFER_PIN, 0);
 			_delay_us(DATA_HOLD_TIME);
@@ -113,7 +113,7 @@ void dataSend()
 	for (uint8_t i = 0; i < sizeOfMessage; i++)
 	{
 		//NEW PACKET
-		startDelay(500);
+		startDelay();
 		for (uint8_t j = 0; j < 8; j++)
 		{
 			if (rawBinaryMessage[i][j] == 0)
