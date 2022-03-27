@@ -3,7 +3,7 @@
 int portState = 0, portAddress = 0;
 
 //---------------------------------------------Setup for school's x86 platform---------------------------------------------
-/* int setup(int newPortAddress)
+int setup(int newPortAddress)
 {
 	if (ioperm(newPortAddress,1,1) !=0)
 	{
@@ -19,10 +19,10 @@ int portState = 0, portAddress = 0;
 		printf("Program inicializoval hodnoty na 0.\n");
 		return 0;
 	}
-}; */
+};
 
 //writeValue function for x86 platform
-/* int writeValue(int bitPos, int value)
+int writeValue(int bitPos, int value)
 {
 	if (value == 1)
 		portState |= (1<<bitPos);
@@ -34,22 +34,21 @@ int portState = 0, portAddress = 0;
 	return portState;
 };
 
-int readReceivedValue()
+int readReceivedValue(int portID)
 {
-	if (inb(PORT_ADDRESS)&(1<<0))
+	if (inb(portID)&(1<<0))
 		return 1;
 	else
 		return 0;
-}; */
+};
 
-/*void myDelay(int delayMS)
+void myDelay(int delayMS)
 {
 	clock_t startTime = clock();
 	while (clock() < startTime + delayMS * 1000)
 	;
-};*/
+};
 
-/*
 int myDelay2(long miliseconds)
 {
    struct timespec rem;
@@ -59,35 +58,4 @@ int myDelay2(long miliseconds)
    };
 
    return nanosleep(&req , &rem);
-}*/
-
-//---------------------------------------------Setup for AVR platform---------------------------------------------
-void setup(int pinSelection, bool isTransmiter)
-{
-	//set register as output, leave other alone (for protection input is preferred)
-	if (isTransmiter)
-	{
-		DDRD = (0x01 << pinSelection);
-		PORTD = 0x00;
-	}
-		
-	else
-		DDRD = 0x00;
-}
-
-void writeValueAVR(int bitPos, int value)
-{
-	if (value == 1)
-		PORTD |= (1 << bitPos);
-	else
-		PORTD &= ~(1 << bitPos);
-}
-
-int readValueAVR(int bitPos)
-{
- 	if ((PIND & (1 << bitPos)) == 0)
-		return 0;
-	else
-		return 1;
-	//return (PIND & (1 << bitPos));
 }
