@@ -5,33 +5,36 @@
 //for first bit indicating incomming packet (define tolerances for signal duration)
 #define START_TOLERANCE 490 //us
 #define END_TOLERANCE 510 //us
+#define DELAY_BEFORE_READ 2000 //us
+#define DELAY_BEFORE_FIRST_VALUE 500 //us
+#define DELAY_BETWEEN_READS 1000 //us
 
 static uint8_t dataPacket = 0;
 
 uint16_t readIncommingPacket()
 {
 	uint16_t outputData = 0;
-	_delay_us(500);
+	_delay_us(DELAY_BEFORE_FIRST_VALUE);
 
 	for (uint8_t i = 0; i < 12; i++)
 	{
 		if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 		{
-			_delay_us(1000);
+			_delay_us(DELAY_BETWEEN_READS);
 			if (readValueAVR(DATA_TRANSFER_PIN) == 0)
 			{
 				outputData |= 0 << i;
-				_delay_us(1000);
+				_delay_us(DELAY_BETWEEN_READS);
 			}
 		}
 
 		else
 		{
-			_delay_us(1000);
+			_delay_us(DELAY_BETWEEN_READS);
 			if (readValueAVR(DATA_TRANSFER_PIN) == 1)
 			{
 				outputData |= 1 << i;
-				_delay_us(1000);
+				_delay_us(DELAY_BETWEEN_READS);
 			}
 		}
 	}	
@@ -91,7 +94,7 @@ int main (void)
 			//Check if data transmission started (each packet has starting value, used for sync)
 			if (timeShift2 - timeShift <= END_TOLERANCE && timeShift2 - timeShift > START_TOLERANCE)
 			{
-				_delay_us(2000);
+				_delay_us(DELAY_BEFORE_READ);
 				if (integrityCheck(readIncommingPacket()) == 0)
 					Serial.println((char)dataPacket);
 			}

@@ -2,6 +2,9 @@
 
 #define DATA_TRANSFER_PIN 2
 #define DATA_HOLD_TIME 998 //2us removed because that's the average time that is used for rest of the program
+#define START_PULSE 500 //us
+#define START_DELAY 2000//us delay betweeen start and actual data
+#define DELAY_BETWEEEN_PACKETS 20 //ms
 
 //I aware that this step is not memory efficient whole int array takes up 512 bytes (when int is one byte) And I know that I can store just ascii values and convert it to binary on the fly before sending.
 //But for this purpose of school homework I have settled for this solution. So convert all ascii values to binary and save it in 2d array. (I know that I'm wasting a lot of memory)
@@ -38,9 +41,9 @@ void breakUpText(char text[])
 void startDelay()
 {
 	writeValueAVR(DATA_TRANSFER_PIN, 1);
-	_delay_us(500);
+	_delay_us(START_PULSE);
 	writeValueAVR(DATA_TRANSFER_PIN, 0);
-	_delay_us(2000);
+	_delay_us(START_DELAY);
 }
 
 //Sent 4bit checksum
@@ -95,7 +98,7 @@ void dataSend()
 		//_delay_us(2000);
 		checkSum(i);
 		writeValueAVR(DATA_TRANSFER_PIN, 0);
-		_delay_ms(20); //delay between packets
+		_delay_ms(DELAY_BETWEEEN_PACKETS); //delay between packets
 	}
 }
 
@@ -110,7 +113,7 @@ int main (void)
 		writeValueAVR(DATA_TRANSFER_PIN, 0);
 		breakUpText("helo");
 		dataSend();
-		_delay_ms(2000);;
+		_delay_ms(2000); //delay betweeen sending values
 	}
 	return 0;
 }
