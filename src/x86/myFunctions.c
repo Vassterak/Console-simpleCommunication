@@ -32,9 +32,9 @@ void writeValue(int bitPos, int value)
 	outb(portState, portAddress);
 };
 
-int getState(int portInput, int bitPosition)
+int readValue(int portInput, int bitPosition)
 {
-	if((portInput&(1<<bitPosition)) == 0)
+	if((portInput&(1<<bitPosition)) == 1)
 		return 1;
 	else
 		return 0;

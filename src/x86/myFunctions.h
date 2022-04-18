@@ -11,7 +11,7 @@ extern int portState;
 
 int setup(int newPortAddress);
 int writeValue(int bitPos, int value);
-int readReceivedValue(int portID);
-void delay(int delayMS);
+int readValue(int portInput, int bitPosition)
+void myDelay(int delayus)
 
 #endif
