@@ -1,37 +1,125 @@
 #include "myFunctions.h"
 
 #define PORT_ADDRESS 0x300
-#define MAX_PACKET_SIZE 16 //in bytes, min size is 
+#define DATA_HOLD_TIME 998 //2us removed because that's the average time that is used for rest of the program
+#define START_PULSE 500 //us
+#define START_DELAY 2000//us delay betweeen start and actual data
+#define DELAY_BETWEEEN_PACKETS 20000 //us = 20ms
 
-char userInput[16];
-int currentCharPosition = 0;
+//I aware that this step is not memory efficient whole int array takes up 512 bytes (when int is one byte) And I know that I can store just ascii values and convert it to binary on the fly before sending.
+//But for this purpose of school homework I have settled for this solution. So convert all ascii values to binary and save it in 2d array. (I know that I'm wasting a lot of memory)
+static uint8_t rawBinaryMessage[64][8], currentIndex = 0, sizeOfMessage = 0, checkSumNum[64];
 
-void userInput()
+void ConvertToBinary(uint8_t asciiChar)
 {
-    fgets(userInput,16,stdin);
-};
+	for (uint8_t i = 0; i < 8; i++)
+	{
+		if ((asciiChar & 1) == 1)
+		{
+			rawBinaryMessage[currentIndex][i] = 1;
+			checkSumNum[currentIndex]++;
+		}
 
-int returnBinaryValue()
+		else
+			rawBinaryMessage[currentIndex][i] = 0;
+
+		asciiChar = asciiChar >> 1;
+	}
+}
+
+void breakUpText(char text[])
+{
+	sizeOfMessage = strlen(text);
+
+	for (uint8_t i = 0; text[i] != '\0'; i++)
+	{
+		currentIndex = i;
+		ConvertToBinary(text[i]);
+	}
+}
+
+void startDelay()
+{
+	writeValue(DATA_TRANSFER_PIN, 1);
+	myDelay(START_PULSE);
+	writeValue(DATA_TRANSFER_PIN, 0);
+	myDelay(START_DELAY);
+}
+
+//Sent 4bit checksum
+void checkSum(uint8_t packetID)
+{
+	uint8_t number = checkSumNum[packetID];
+	//Serial.println(number);
+
+	for (uint8_t i = 0; i < 4; i++)
+	{
+		if ((number >> (i)) & 1)
+		{
+			writeValue(DATA_TRANSFER_PIN, 0);
+			myDelay(DATA_HOLD_TIME);
+			writeValue(DATA_TRANSFER_PIN, 1);
+			myDelay(DATA_HOLD_TIME);
+		}
+		else
+		{
+			writeValue(DATA_TRANSFER_PIN, 1);
+			myDelay(DATA_HOLD_TIME);
+			writeValue(DATA_TRANSFER_PIN, 0);
+			myDelay(DATA_HOLD_TIME);
+		}
+	}
+	checkSumNum[packetID] = 0;
+}
+
+void dataSend()
+{
+	for (uint8_t i = 0; i < sizeOfMessage; i++)
+	{
+		//NEW PACKET
+		startDelay();
+		for (uint8_t j = 0; j < 8; j++)
+		{
+			if (rawBinaryMessage[i][j] == 0)
+			{
+				writeValue(1, 1);
+				myDelay(DATA_HOLD_TIME);
+				writeValue(1, 0);
+				myDelay(DATA_HOLD_TIME);
+			}
+			else
+			{
+				writeValue(1, 0);
+				myDelay(DATA_HOLD_TIME);
+				writeValue(1, 1);
+				myDelay(DATA_HOLD_TIME);
+			}
+		}
+		//_delay_us(2000);
+		checkSum(i);
+		writeValue(1, 0);
+		myDelay(DELAY_BETWEEEN_PACKETS); //delay between packets
+	}
+}
+
+int main (void)
 {
 
-
-};
-
-int main(void)
-{	
-	//End program when port access is denied.
 	if (setup(PORT_ADDRESS) == 1)
 		return 1;
 	
-	writeValue(0,0); //set first bit to LOW (Transmit mode)
-	
+	writeValue(0,0); //set first bit to LOW (Transmit mode) bit pos 0
+
 	while (1)
 	{
-		printf("Transmiter\n");
-		writeValue(1, 0);
-		delay(50);
-		writeValue(1, 1);
-		delay(50);
+		char inputMessage[32];
+
+		printf("Zadej text: ");
+		scanf("%s", inputMessage);
+		writeValue(1, 0); //bit pos 1
+		breakUpText(inputMessage);
+		dataSend();
 	}
+
 	return 0;
 }

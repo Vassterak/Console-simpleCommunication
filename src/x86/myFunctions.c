@@ -22,30 +22,28 @@ int setup(int newPortAddress)
 };
 
 //writeValue function for x86 platform
-int writeValue(int bitPos, int value)
+void writeValue(int bitPos, int value)
 {
 	if (value == 1)
 		portState |= (1<<bitPos);
 	else
 		portState &= ~(1<<bitPos);
-	
-	printf("Write to port\n");
+
 	outb(portState, portAddress);
-	return portState;
 };
 
-int readReceivedValue(int portID)
+int getState(int portInput, int bitPosition)
 {
-	if (inb(portID)&(1<<0))
+	if((portInput&(1<<bitPosition)) == 0)
 		return 1;
 	else
 		return 0;
 };
 
-void myDelay(int delayMS)
+void myDelay(int delayus)
 {
 	clock_t startTime = clock();
-	while (clock() < startTime + delayMS * 1000)
+	while (clock() < startTime + delayus)
 	;
 };
 
