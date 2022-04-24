@@ -95,8 +95,10 @@ int main (void)
 			if (timeShift2 - timeShift <= END_TOLERANCE && timeShift2 - timeShift > START_TOLERANCE)
 			{
 				_delay_us(DELAY_BEFORE_READ);
-				if (integrityCheck(readIncommingPacket()) == 0)
+				if (integrityCheck(readIncommingPacket()) == 0 && dataPacket < 127)
 					Serial.println((char)dataPacket);
+				else
+					Serial.println((char)63);
 			}
 			else
 				continue;
