@@ -1,17 +1,20 @@
 #include <sys/io.h>
 #include <stdio.h>
 #include <time.h>
+#include <sys/time.h> 
+#include <stdint.h>
+#include <string.h>
 
 #ifndef MYFUNCTIONS_H
 #define MYFUNCTIONS_H
 
-//---------------------------------------------Setup for school's x86 platform---------------------------------------------
 extern int portAddress;
 extern int portState;
 
-int setup(int newPortAddress);
-int writeValue(int bitPos, int value);
-int readValue(int portInput, int bitPosition)
-void myDelay(int delayus)
+// int setup(int newPortAddress); VYPNUTO PRO RPi
+void writeValue(int bitPos, int value);
+int readValue(int portInput, int bitPosition);
+void preciseDelay(int us);
+long getMicrotime();
 
 #endif

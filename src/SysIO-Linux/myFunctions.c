@@ -1,11 +1,11 @@
 #include "myFunctions.h"
 
-int portState = 0, portAddress = 0;
+int portState = 0;
+int portAddress = 0;
 
-//---------------------------------------------Setup for school's x86 platform---------------------------------------------
 int setup(int newPortAddress)
 {
-	if (ioperm(newPortAddress,1,1) !=0)
+ 	if (ioperm(newPortAddress,1,1) !=0)
 	{
 		printf("Program nemam pristup k portu.\n");
 		return 1;
@@ -21,7 +21,6 @@ int setup(int newPortAddress)
 	}
 };
 
-//writeValue function for x86 platform
 void writeValue(int bitPos, int value)
 {
 	if (value == 1)
@@ -34,26 +33,25 @@ void writeValue(int bitPos, int value)
 
 int readValue(int portInput, int bitPosition)
 {
-	if((portInput&(1<<bitPosition)) == 1)
+	int value = inb(portInput);
+	if((value&(1<<bitPosition)) != 0)
 		return 1;
 	else
 		return 0;
 };
 
-void myDelay(int delayus)
+//precise delay
+long getMicrotime()
 {
-	clock_t startTime = clock();
-	while (clock() < startTime + delayus)
-	;
-};
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
+}
 
-int myDelay2(long miliseconds)
+//precise delay
+void preciseDelay(int us)
 {
-   struct timespec rem;
-   struct timespec req= {
-       (int)(miliseconds / 1000),
-       (miliseconds % 1000) * 1000000
-   };
-
-   return nanosleep(&req , &rem);
+    long startTime = getMicrotime();
+    while (startTime + us > getMicrotime())
+    {} 
 }
